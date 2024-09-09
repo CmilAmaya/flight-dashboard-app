@@ -2,6 +2,7 @@
 env/
 .env
 
+.streamlit/secrets.toml
 # Archivos compilados de Python
 *.pyc
 __pycache__/
