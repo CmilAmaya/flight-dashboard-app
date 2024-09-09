@@ -7,7 +7,7 @@ This project is an application that processes attached PDF documents and images 
 - **Dynamic Dashboard**: Provides an interactive interface with visualizations and dashboards using Streamlit.
 
 ## Project Stucture
-![Project Stucture](https://ibb.co/yd7dWP7)
+![Project Stucture](https://github.com/CmilAmaya/flight-dashboard-app/blob/main/png.png)
 - **flight-dashboard-app/** is the root directory of the project.
 - **data/** contains data files such as `Aerolineas.xlsx` and `airport_codes.json`.
 - **env/** is the Python virtual environment.
