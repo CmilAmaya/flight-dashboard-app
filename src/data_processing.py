@@ -3,17 +3,13 @@ import re
 import json 
 import spacy
 
-#pdf_path = "../data/Pasabordo4.pdf"
 nlp = spacy.load("es_core_news_sm")
-pdf_path = "../data/Wingo - WO6EC5.pdf"
-json_file_path = "../data/airport_codes.json"
 
 def extract_text_fitz(pdf_path):
     doc = fitz.open(pdf_path)
     for page in doc:
         text = page.get_text("text")
     return text
-
 
 def clean_text(text):
     unwanted_phrases = [
@@ -33,8 +29,7 @@ def load_airport_codes(file_path):
 
 def extract_flight_info(text, airport_codes):
     flight_info = {}
-
-    
+   
     # Patrones 
     departure_date_patterns = [
         r'\b(\w{3},\s*\d{1,2}\s+\w+)\s*\|\s*(\d{2}:\d{2})\b',  
@@ -76,7 +71,7 @@ def extract_flight_info(text, airport_codes):
         r'\bPasajero\s+([A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+)\b',  
         r'\bPasajero\s+([A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+)\b',  
         r'\bNOMBRE\s+PASAJERO:\s+([A-Z]+/[A-Z]+)\b',  
-        r'\b([A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+)\s+(AV)\s*\d+\b'
+        r'\b([A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+)\s+(AV)\s*\d+\b',
         r'\b([A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+)\s+(AV)\s*\d+\b',
         r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+\s*/\s*[A-Z][a-z]+(?:\s+[A-Z][a-z]+))'
     ]
@@ -141,14 +136,13 @@ def extract_flight_info(text, airport_codes):
                 flight_info['origen'] = None
                 flight_info['destino'] = None
 
-    operador_match = re.search(r'(Avianca|Aero República S.A|Air Europa|JetSMART|LATAM|Latam|KLM)', text, re.IGNORECASE)
+    operador_match = re.search(r'(Avianca|Aero República S.A|Air Europa|JetSMART|LATAM|Latam|KLM)', text)
     if operador_match:
         if operador_match.group(1) == "Aero República S.A": 
             flight_info['operado_por'] = "Wingo"
         else:  
             flight_info['operado_por'] = operador_match.group(1)
             
-
     flight_info = {
         'fecha_salida': flight_info.get('fecha_salida', 'N/A'),
         'pasajero': flight_info.get('pasajero', 'N/A'),
@@ -162,7 +156,10 @@ def extract_flight_info(text, airport_codes):
 
     return flight_info
 
-resultado = extract_text_fitz(pdf_path)
-texto_limpio = clean_text(resultado)
-codes = load_airport_codes(json_file_path)
-print(extract_flight_info(texto_limpio, codes))
+def data_process_pdfs_direct(pdf_path):
+    json_file_path = "../data/airport_codes.json" 
+    text = extract_text_fitz(pdf_path)
+    clean_text_data = clean_text(text)
+    airport_codes = load_airport_codes(json_file_path)
+    flight_info = extract_flight_info(clean_text_data, airport_codes)
+    return flight_info
