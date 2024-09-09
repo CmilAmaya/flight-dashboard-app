@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base
 from dotenv import load_dotenv
 import os
+import streamlit as st
 
 load_dotenv()
 
@@ -22,11 +23,11 @@ class FlightInfo(Base):
     airline_code = Column(Integer, nullable=True)
 
 def get_db_engine():
-    user = os.getenv("DB_USER")
-    password = os.getenv("DB_PASSWORD")
-    host = os.getenv("DB_HOST")
-    port = os.getenv("DB_PORT")
-    database = os.getenv("DB_NAME")
+    user = st.secrets["db_user"]
+    password = st.secrets["db_password"]
+    host = st.secrets["db_host"]
+    port = st.secrets["db_port"]
+    database = st.secrets["db_name"]
     
     connection_string = f"postgresql://{user}:{password}@{host}:{port}/{database}"
     engine = create_engine(connection_string)
