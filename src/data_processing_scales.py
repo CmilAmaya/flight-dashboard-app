@@ -2,6 +2,7 @@ import fitz
 import re
 import json
 import spacy
+import os
 
 nlp = spacy.load("es_core_news_sm")
 
@@ -152,7 +153,7 @@ def extract_flight_info_scales(text, airport_codes):
     return flight_info_list
 
 def data_process_pdfs_with_scales(pdf_path):
-    json_file_path = "../data/airport_codes.json"
+    json_file_path = os.path.join(os.path.dirname(__file__), '../data/airport_codes.json')
     text = extract_text_fitz(pdf_path)
     clean_text_data = clean_text(text)
     airport_codes = load_airport_codes(json_file_path)

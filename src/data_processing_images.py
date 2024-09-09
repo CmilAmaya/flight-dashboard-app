@@ -2,6 +2,7 @@ import cv2
 import pytesseract
 import re
 import json
+import os 
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
@@ -146,7 +147,7 @@ def process_images(image_path):
     img = cv2.imread(image_path)
     custom_config = r'--oem 3 --psm 6'
     text = pytesseract.image_to_string(img, config=custom_config)
-    json_file_path = "../data/airport_codes.json"
+    json_file_path = os.path.join(os.path.dirname(__file__), '../data/airport_codes.json')
     airport_codes = load_airport_codes(json_file_path)
     clean_text_data = clean_text(text)
     flight_info = extract_flight_info_images(clean_text_data, airport_codes)
