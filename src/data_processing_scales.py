@@ -4,8 +4,6 @@ import json
 import spacy
 
 nlp = spacy.load("es_core_news_sm")
-pdf_path = "../data/Your boarding pass to Bogota - AIR EUROPA.pdf"
-json_file_path = "../data/airport_codes.json"
 
 def extract_text_fitz(pdf_path):
     doc = fitz.open(pdf_path)
@@ -32,7 +30,7 @@ def load_airport_codes(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-def extract_flight_info(text, airport_codes):
+def extract_flight_info_scales(text, airport_codes):
     flight_info_list = []
 
     flight_sections = re.split(r'Security nb: \d+ - Ticket: \d+', text)
@@ -148,14 +146,15 @@ def extract_flight_info(text, airport_codes):
             'destino': flight_info.get('destino', 'N/A'),
             'hora_sala': flight_info.get('hora_sala', 'N/A')
         }
-
+        
         flight_info_list.append(flight_info)
 
     return flight_info_list
 
-resultado = extract_text_fitz(pdf_path)
-texto_limpio = clean_text(resultado)
-codes = load_airport_codes(json_file_path)
-flight_info = extract_flight_info(texto_limpio, codes)
-print(flight_info)
-
+def data_process_pdfs_with_scales(pdf_path):
+    json_file_path = "../data/airport_codes.json"
+    text = extract_text_fitz(pdf_path)
+    clean_text_data = clean_text(text)
+    airport_codes = load_airport_codes(json_file_path)
+    flight_info = extract_flight_info_scales(clean_text_data, airport_codes)
+    return flight_info
