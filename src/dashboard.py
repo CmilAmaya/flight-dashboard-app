@@ -4,12 +4,14 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import pandas as pd
 import re
+import os
 from main import main
 from airline_codes import load_airline_codes
 from models import get_db_engine, FlightInfo
 from sqlalchemy.orm import sessionmaker
 
-excel_path = "../data/Aerolineas.xlsx"
+
+excel_path = os.path.join(os.path.dirname(__file__), '../data/Aerolineas.xlsx')
 airline_codes = load_airline_codes(excel_path)
 
 def handle_file(uploaded_file):

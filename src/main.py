@@ -6,7 +6,8 @@ from data_processing_scales import data_process_pdfs_with_scales
 from data_processing_images import process_images
 from airline_codes import load_airline_codes
 
-excel_path = "../data/Aerolineas.xlsx"
+
+excel_path = os.path.join(os.path.dirname(__file__), '../data/Aerolineas.xlsx')
 airline_codes = load_airline_codes(excel_path)
 
 def process_pdf_direct(pdf_path):
