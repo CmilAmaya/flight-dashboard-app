@@ -6,6 +6,16 @@ This project is an application that processes attached PDF documents and images 
 - **Data Storage**: Stores extracted flight data in a PostgreSQL database hosted on AWS RDS.
 - **Dynamic Dashboard**: Provides an interactive interface with visualizations and dashboards using Streamlit.
 
+## Technologies Used
+- Python
+- Streamlit
+- Pandas
+- SQLAlchemy
+- PostgreSQL
+- PyMuPDF (fitz)
+- SpaCy
+- Pillow 
+
 ## Project Stucture
 ![Project Stucture](https://github.com/CmilAmaya/flight-dashboard-app/blob/main/png.png)
 - **flight-dashboard-app/** is the root directory of the project.
@@ -41,7 +51,10 @@ Ensure your database is up-to-date by running the necessary migrations. In this 
 
 ### 6. Start the Application
 
-Once everything is set up, you can start the Streamlit application to view the dashboards:
+Once everything is set up, you can start the Streamlit application to view the dashboards: `streamlit run src/dashboard.py`
 
-```bash
-streamlit run src/dashboard.py
+## License
+This project is licensed under the MIT License. 
+
+## Contact
+If you have any questions or suggestions, feel free to contact me via [LinkedIn](https://www.linkedin.com/in/mar%C3%ADa-camila-amaya-rodr%C3%ADguez/) or [GitHub](https://github.com/CmilAmaya).
