@@ -23,11 +23,15 @@ class FlightInfo(Base):
     airline_code = Column(Integer, nullable=True)
 
 def get_db_engine():
-    user = st.secrets["db"]["user"]
-    password = st.secrets["db"]["password"]
-    host = st.secrets["db"]["host"]
-    port = st.secrets["db"]["port"]
-    database = st.secrets["db"]["name"]
+    try:
+        user = st.secrets["db"]["user"]
+        password = st.secrets["db"]["password"]
+        host = st.secrets["db"]["host"]
+        port = st.secrets["db"]["port"]
+        database = st.secrets["db"]["name"]
+    except KeyError as e:
+        st.error(f"Missing secret key: {e}")
+        return None
     
     connection_string = f"postgresql://{user}:{password}@{host}:{port}/{database}"
     engine = create_engine(connection_string)
