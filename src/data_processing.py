@@ -41,11 +41,14 @@ def extract_flight_info(text, airport_codes):
     ]
 
     flight_patterns = [
+        r'VUELO\s+([A-Z]{2}\d+)',
         r'\b(AV\s*\d{1,4})\b',               
         r'\bNúmero de vuelo\s*([A-Z0-9]{2,6})\b',
         r'\bVuelo\s*([A-Z0-9]+)\b',           
         r'\bGATE\s*([A-Z0-9]+)\b',
-        r'\bVUELO\s+([A-Z]{2}\s*\d{1,4}\*)\b'             
+        r'\bVUELO\s+([A-Z]{2}\s*\d{1,4}\*)\b',
+        r'\bVuelo\s+([A-Z]{2})\s*(\d{3,4})\*?\b',
+        r'\bVuelo\s+([A-Z]{2})\s*(\d{4})\*\b'             
     ]
     
     reservation_patterns = [
@@ -63,14 +66,17 @@ def extract_flight_info(text, airport_codes):
         r'\bHORA\s+EN\s+SALA.*\b(\d{1,2}:\d{2}\s*[apAP]\.?[mM]\.?)\b',
         r'\bBoarding\s+\d{2}\s+\w{3}\s+\d{4}\s+(\d{1,2}:\d{2}\s*[apAP]\.?[mM]\.?)\b',
         r'\bBoarding\s+\d{4}-\d{2}-\d{2}\s+(\d{1,2}:\d{2}\s*[apAP]\.?[mM]\.?)\b',
-        r'\bHORA\s+PRESENTACIÓN\s+PUERTA\s+DE\s+EMBARQUE\s+(\d{1,2}:\d{2}\s*[apAP]\.?[mM]\.?)\b'
+        r'\bHORA\s+PRESENTACIÓN\s+PUERTA\s+DE\s+EMBARQUE\s+(\d{1,2}:\d{2}\s*[apAP]\.?[mM]\.?)\b',
+        r'PUERTA\s+DE\s+EMBARQUE\s+(\d{1,2}:\d{2})',
+        r'HORA\s+PRESENTATION\s+AEROPUERTO\s+(\d{1,2}:\d{2})'
     ]
     
     name_patterns = [
+        r'NOMBRE\s+PASAJERO\s+([A-Z]+/[A-Z]+)',
+        r'\bNOMBRE\s+PASAJERO:\s+([A-Z]+/[A-Z]+)\b',  
         r'\bPasajero\s+([A-Z][a-z]+\s+[A-Z][a-z]+)\b',  
         r'\bPasajero\s+([A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+)\b',  
         r'\bPasajero\s+([A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+)\b',  
-        r'\bNOMBRE\s+PASAJERO:\s+([A-Z]+/[A-Z]+)\b',  
         r'\b([A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+)\s+(AV)\s*\d+\b',
         r'\b([A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+)\s+(AV)\s*\d+\b',
         r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+\s*/\s*[A-Z][a-z]+(?:\s+[A-Z][a-z]+))'
@@ -80,7 +86,8 @@ def extract_flight_info(text, airport_codes):
         r'\b([A-Za-z\s]+) International\b',
         r'\b([A-Z]{3})\b',
         r'\bBoarding\s+([A-Za-z\s]+)\s+(\d{2}:\d{2})\b',  
-        r'\bDeparture\s+([A-Za-z\s]+)\s+(\d{2}:\d{2})\b'
+        r'\bDeparture\s+([A-Za-z\s]+)\s+(\d{2}:\d{2})\b',
+        r'(?:DESDE|HACIA)\s([A-Z\s]+)'
     ]
 
     for pattern in departure_date_patterns:
@@ -124,14 +131,18 @@ def extract_flight_info(text, airport_codes):
         
     for pattern in origin_destination_patterns:
         codes = re.findall(pattern, text)
+        unique_codes = set(code.strip() for code in codes)
+        print(unique_codes)
         if codes:
-            valid_codes = [code for code in codes if code in airport_codes]
+            valid_codes = [code for code in unique_codes if code in airport_codes]
             if len(valid_codes) >= 2:
                 flight_info['origen'] = airport_codes.get(valid_codes[0], valid_codes[0])
                 flight_info['destino'] = airport_codes.get(valid_codes[1], valid_codes[1])
+                break
             elif len(valid_codes) == 1:
                 flight_info['origen'] = airport_codes.get(valid_codes[0], valid_codes[0])
                 flight_info['destino'] = None
+                break
             else:
                 flight_info['origen'] = None
                 flight_info['destino'] = None
@@ -140,6 +151,8 @@ def extract_flight_info(text, airport_codes):
     if operador_match:
         if operador_match.group(1) == "Aero República S.A": 
             flight_info['operado_por'] = "Wingo"
+        elif operador_match.group(1) == "LATAM": 
+            flight_info['operado_por'] = "Latam"
         else:  
             flight_info['operado_por'] = operador_match.group(1)
             

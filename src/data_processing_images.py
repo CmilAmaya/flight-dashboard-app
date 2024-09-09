@@ -56,10 +56,12 @@ def extract_flight_info_images(text, airport_codes):
         r'\bVuelo\s*([A-Z0-9]+)\b',           
         r'\bGATE\s*([A-Z0-9]+)\b',
         r'\bVUELO\s+([A-Z]{2}\s*\d{1,4}\*)\b',
-        r'\b([A-Z]{3}\d{3})\b'             
+        r'\b([A-Z]{3}\d{3})\b',
+        r'\b([A-Z]{2}\d{3,4})\b'             
     ]
     
     name_patterns = [
+        r'\b([A-Z]+/[A-Z]+)\b',
         r'\bPasajero\s+([A-Z][a-z]+\s+[A-Z][a-z]+)\b',  
         r'\bPasajero\s+([A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+)\b',  
         r'\bPasajero\s+([A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+\s+[A-Z][a-z]+)\b',  
